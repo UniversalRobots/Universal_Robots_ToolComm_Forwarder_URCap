@@ -40,6 +40,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
+	
 	private static final String POPUPTITLE_KEY = "popuptitle";
 
 	private static final String XMLRPC_VARIABLE = "my_daemon";
@@ -57,7 +58,7 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 		xmlRpcDaemonInterface = new XmlRpcRS485Interface("127.0.0.1", 40404);
 		applyDesiredDaemonStatus();
 	}
-
+	/*
 	@Input(id = POPUPTITLE_KEY)
 	private InputTextField popupTitleField;
 
@@ -69,14 +70,14 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 
 	@Label(id = "lblDaemonStatus")
 	private LabelComponent daemonStatusLabel;
-
+	
 	@Input(id = POPUPTITLE_KEY)
 	public void onMessageChange(InputEvent event) {
 		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
 			setPopupTitle(popupTitleField.getText());
 		}
 	}
-
+	
 	@Input(id = "btnEnableDaemon")
 	public void onStartClick(InputEvent event) {
 		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
@@ -92,9 +93,11 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 			applyDesiredDaemonStatus();
 		}
 	}
-
+	*/
 	@Override
 	public void openView() {
+		System.out.println("View opened");
+		/*/
 		enableDaemonButton.setText("Start Daemon");
 		disableDaemonButton.setText("Stop daemon");
 		popupTitleField.setText(getPopupTitle());
@@ -112,8 +115,9 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 				});
 			}
 		}, 0, 1000);
+*/		
 	}
-
+	/*
 	private void updateUI() {
 		DaemonContribution.State state = getDaemonState();
 
@@ -138,57 +142,31 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 			break;
 		}
 		daemonStatusLabel.setText(text);
-	}
+	}*/
 
 	@Override
 	public void closeView() {
-		if (uiTimer != null) {
+		System.out.println("View opened");
+		/*if (uiTimer != null) {
 			uiTimer.cancel();
-		}
+		}*/
 	}
 
 	public boolean isDefined() {
-		return !getPopupTitle().isEmpty() && getDaemonState() == DaemonContribution.State.RUNNING;
+		return getDaemonState() == DaemonContribution.State.RUNNING;
 	}
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.globalVariable(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40404/RPC2\")");
 		// Apply the settings to the daemon on program start in the Installation pre-amble
-		writer.appendLine(XMLRPC_VARIABLE + ".set_title(\"" + getPopupTitle() + "\")");
+		//writer.appendLine(XMLRPC_VARIABLE + ".set_title(\"" + getPopupTitle() + "\")");
 	}
 
-	public String getPopupTitle() {
-		if (!model.isSet(POPUPTITLE_KEY)) {
-			resetToDefaultValue();
-		}
-		return model.get(POPUPTITLE_KEY, DEFAULT_VALUE);
-	}
 
-	private void setPopupTitle(String title) {
-		if ("".equals(title)) {
-			resetToDefaultValue();
-		} else {
-			model.set(POPUPTITLE_KEY, title);
-			// Apply the new setting to the daemon for real-time preview purposes
-			// Note this might influence a running program, since the actual state is stored in the daemon.
-			setDaemonTitle(title);
-		}
-	}
 
-	private void resetToDefaultValue() {
-		popupTitleField.setText(DEFAULT_VALUE);
-		model.set(POPUPTITLE_KEY, DEFAULT_VALUE);
-		setDaemonTitle(DEFAULT_VALUE);
-	}
-
-	private void setDaemonTitle(String title) {
-		try {
-			xmlRpcDaemonInterface.setTitle(title);
-		} catch(Exception e){
-			System.err.println("Could not set the title in the daemon process.");
-		}
-	}
+	
+	
 
 	private void applyDesiredDaemonStatus() {
 		new Thread(new Runnable() {
@@ -198,9 +176,8 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 					// Download the daemon settings to the daemon process on initial start for real-time preview purposes
 					try {
 						awaitDaemonRunning(5000);
-						xmlRpcDaemonInterface.setTitle(getPopupTitle());
 					} catch (Exception e) {
-						System.err.println("Could not set the title in the daemon process.");
+						System.err.println("Exception in method 'applyDesiredDaemonStatus'.");
 					}
 				} else {
 					daemonService.getDaemon().stop();
