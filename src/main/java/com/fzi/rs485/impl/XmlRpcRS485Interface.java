@@ -32,11 +32,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class XmlRpcMyDaemonInterface {
+public class XmlRpcRS485Interface {
 
 	private final XmlRpcClient client;
 
-	public XmlRpcMyDaemonInterface(String host, int port) {
+	public XmlRpcRS485Interface(String host, int port) {
 		XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 		config.setEnabledForExtensions(true);
 		try {

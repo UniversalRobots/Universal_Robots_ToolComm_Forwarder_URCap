@@ -37,14 +37,14 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MyDaemonProgramNodeContribution implements ProgramNodeContribution {
+public class RS485ProgramNodeContribution implements ProgramNodeContribution {
 	private static final String NAME = "name";
 
 	private final DataModel model;
 	private final URCapAPI api;
 	private Timer uiTimer;
 
-	public MyDaemonProgramNodeContribution(URCapAPI api, DataModel model) {
+	public RS485ProgramNodeContribution(URCapAPI api, DataModel model) {
 		this.api = api;
 		this.model = model;
 	}
@@ -138,8 +138,8 @@ public class MyDaemonProgramNodeContribution implements ProgramNodeContribution 
 		}
 	}
 
-	private MyDaemonInstallationNodeContribution getInstallation(){
-		return api.getInstallationNode(MyDaemonInstallationNodeContribution.class);
+	private RS485InstallationNodeContribution getInstallation(){
+		return api.getInstallationNode(RS485InstallationNodeContribution.class);
 	}
 
 }

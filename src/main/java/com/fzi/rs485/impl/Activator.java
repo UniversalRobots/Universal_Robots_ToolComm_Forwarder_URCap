@@ -33,11 +33,11 @@ import com.ur.urcap.api.contribution.DaemonService;
 public class Activator implements BundleActivator {
 	@Override
 	public void start(final BundleContext context) throws Exception {
-		MyDaemonDaemonService daemonService = new MyDaemonDaemonService();
-		MyDaemonInstallationNodeService installationNodeService = new MyDaemonInstallationNodeService(daemonService);
+		RS485DaemonService daemonService = new RS485DaemonService();
+		RS485InstallationNodeService installationNodeService = new RS485InstallationNodeService(daemonService);
 
 		context.registerService(InstallationNodeService.class, installationNodeService, null);
-		context.registerService(ProgramNodeService.class, new MyDaemonProgramNodeService(), null);
+		context.registerService(ProgramNodeService.class, new RS485ProgramNodeService(), null);
 		context.registerService(DaemonService.class, daemonService, null);
 	}
 

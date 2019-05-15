@@ -23,36 +23,39 @@
  */
 //----------------------------------------------------------------------
 package com.fzi.rs485.impl;
+import com.ur.urcap.api.contribution.DaemonContribution;
+import com.ur.urcap.api.contribution.DaemonService;
 
-import com.ur.urcap.api.contribution.InstallationNodeContribution;
-import com.ur.urcap.api.contribution.InstallationNodeService;
-import com.ur.urcap.api.domain.URCapAPI;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import java.io.InputStream;
 
-import com.ur.urcap.api.domain.data.DataModel;
+public class RS485DaemonService implements DaemonService {
 
-public class MyDaemonInstallationNodeService implements InstallationNodeService {
+	private DaemonContribution daemonContribution;
 
-	private final MyDaemonDaemonService daemonService;
-
-	public MyDaemonInstallationNodeService(MyDaemonDaemonService daemonService) {
-		this.daemonService = daemonService;
+	public RS485DaemonService() {
 	}
 
 	@Override
-	public InstallationNodeContribution createInstallationNode(URCapAPI api, DataModel model) {
-		return new MyDaemonInstallationNodeContribution(daemonService, model);
+	public void init(DaemonContribution daemonContribution) {
+		this.daemonContribution = daemonContribution;
+		try {
+			daemonContribution.installResource(new URL("file:com/fzi/rs485/impl/daemon/"));
+		} catch (MalformedURLException e) {	}
 	}
 
 	@Override
-	public String getTitle() {
-		return "My Daemon";
+	public URL getExecutable() {
+		try {
+			return new URL("file:com/fzi/rs485/impl/daemon/hello-world.py"); // Python executable
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 
-	@Override
-	public InputStream getHTML() {
-		InputStream is = this.getClass().getResourceAsStream("/com/fzi/rs485/impl/installation.html");
-		return is;
+	public DaemonContribution getDaemon() {
+		return daemonContribution;
 	}
+
 }

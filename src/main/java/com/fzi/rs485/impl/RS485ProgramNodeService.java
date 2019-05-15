@@ -31,19 +31,19 @@ import com.ur.urcap.api.domain.data.DataModel;
 
 import java.io.InputStream;
 
-public class MyDaemonProgramNodeService implements ProgramNodeService {
+public class RS485ProgramNodeService implements ProgramNodeService {
 
-	public MyDaemonProgramNodeService() {
+	public RS485ProgramNodeService() {
 	}
 
 	@Override
 	public String getId() {
-		return "MyDaemonNode";
+		return "RS485Node";
 	}
 
 	@Override
 	public String getTitle() {
-		return "My Daemon";
+		return "RS485 Interface";
 	}
 
 	@Override
@@ -64,6 +64,6 @@ public class MyDaemonProgramNodeService implements ProgramNodeService {
 
 	@Override
 	public ProgramNodeContribution createNode(URCapAPI api, DataModel model) {
-		return new MyDaemonProgramNodeContribution(api, model);
+		return new RS485ProgramNodeContribution(api, model);
 	}
 }

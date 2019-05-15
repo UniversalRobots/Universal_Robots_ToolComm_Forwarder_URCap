@@ -39,7 +39,7 @@ import java.awt.EventQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MyDaemonInstallationNodeContribution implements InstallationNodeContribution {
+public class RS485InstallationNodeContribution implements InstallationNodeContribution {
 	private static final String POPUPTITLE_KEY = "popuptitle";
 
 	private static final String XMLRPC_VARIABLE = "my_daemon";
@@ -47,14 +47,14 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 	private static final String DEFAULT_VALUE = "HelloWorld";
 
 	private DataModel model;
-	private final MyDaemonDaemonService daemonService;
-	private XmlRpcMyDaemonInterface xmlRpcDaemonInterface;
+	private final RS485DaemonService daemonService;
+	private XmlRpcRS485Interface xmlRpcDaemonInterface;
 	private Timer uiTimer;
 
-	public MyDaemonInstallationNodeContribution(MyDaemonDaemonService daemonService, DataModel model) {
+	public RS485InstallationNodeContribution(RS485DaemonService daemonService, DataModel model) {
 		this.daemonService = daemonService;
 		this.model = model;
-		xmlRpcDaemonInterface = new XmlRpcMyDaemonInterface("127.0.0.1", 40404);
+		xmlRpcDaemonInterface = new XmlRpcRS485Interface("127.0.0.1", 40404);
 		applyDesiredDaemonStatus();
 	}
 
@@ -233,5 +233,5 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 		return XMLRPC_VARIABLE;
 	}
 
-	public XmlRpcMyDaemonInterface getXmlRpcDaemonInterface() {return xmlRpcDaemonInterface; }
+	public XmlRpcRS485Interface getXmlRpcDaemonInterface() {return xmlRpcDaemonInterface; }
 }
