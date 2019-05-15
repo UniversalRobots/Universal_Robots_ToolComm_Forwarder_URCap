@@ -28,29 +28,16 @@ import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
-import com.ur.urcap.api.ui.annotation.Input;
-import com.ur.urcap.api.ui.annotation.Label;
-import com.ur.urcap.api.ui.component.InputButton;
-import com.ur.urcap.api.ui.component.InputEvent;
-import com.ur.urcap.api.ui.component.InputTextField;
-import com.ur.urcap.api.ui.component.LabelComponent;
 
-import java.awt.EventQueue;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
 	
-	private static final String POPUPTITLE_KEY = "popuptitle";
-
 	private static final String XMLRPC_VARIABLE = "my_daemon";
 	private static final String ENABLED_KEY = "enabled";
-	private static final String DEFAULT_VALUE = "HelloWorld";
 
 	private DataModel model;
 	private final RS485DaemonService daemonService;
 	private XmlRpcRS485Interface xmlRpcDaemonInterface;
-	private Timer uiTimer;
 
 	public RS485InstallationNodeContribution(RS485DaemonService daemonService, DataModel model) {
 		this.daemonService = daemonService;
@@ -58,98 +45,15 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 		xmlRpcDaemonInterface = new XmlRpcRS485Interface("127.0.0.1", 40404);
 		applyDesiredDaemonStatus();
 	}
-	/*
-	@Input(id = POPUPTITLE_KEY)
-	private InputTextField popupTitleField;
-
-	@Input(id = "btnEnableDaemon")
-	private InputButton enableDaemonButton;
-
-	@Input(id = "btnDisableDaemon")
-	private InputButton disableDaemonButton;
-
-	@Label(id = "lblDaemonStatus")
-	private LabelComponent daemonStatusLabel;
 	
-	@Input(id = POPUPTITLE_KEY)
-	public void onMessageChange(InputEvent event) {
-		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
-			setPopupTitle(popupTitleField.getText());
-		}
-	}
-	
-	@Input(id = "btnEnableDaemon")
-	public void onStartClick(InputEvent event) {
-		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
-			setDaemonEnabled(true);
-			applyDesiredDaemonStatus();
-		}
-	}
-
-	@Input(id = "btnDisableDaemon")
-	public void onStopClick(InputEvent event) {
-		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
-			setDaemonEnabled(false);
-			applyDesiredDaemonStatus();
-		}
-	}
-	*/
 	@Override
 	public void openView() {
 		System.out.println("View opened");
-		/*/
-		enableDaemonButton.setText("Start Daemon");
-		disableDaemonButton.setText("Stop daemon");
-		popupTitleField.setText(getPopupTitle());
-
-		//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
-		uiTimer = new Timer(true);
-		uiTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				EventQueue.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						updateUI();
-					}
-				});
-			}
-		}, 0, 1000);
-*/		
 	}
-	/*
-	private void updateUI() {
-		DaemonContribution.State state = getDaemonState();
-
-		if (state == DaemonContribution.State.RUNNING) {
-			enableDaemonButton.setEnabled(false);
-			disableDaemonButton.setEnabled(true);
-		} else {
-			enableDaemonButton.setEnabled(true);
-			disableDaemonButton.setEnabled(false);
-		}
-
-		String text = "";
-		switch (state) {
-		case RUNNING:
-			text = "My Daemon runs";
-			break;
-		case STOPPED:
-			text = "My Daemon stopped";
-			break;
-		case ERROR:
-			text = "My Daemon failed";
-			break;
-		}
-		daemonStatusLabel.setText(text);
-	}*/
-
+	
 	@Override
 	public void closeView() {
 		System.out.println("View opened");
-		/*if (uiTimer != null) {
-			uiTimer.cancel();
-		}*/
 	}
 
 	public boolean isDefined() {
@@ -159,14 +63,7 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.globalVariable(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40404/RPC2\")");
-		// Apply the settings to the daemon on program start in the Installation pre-amble
-		//writer.appendLine(XMLRPC_VARIABLE + ".set_title(\"" + getPopupTitle() + "\")");
-	}
-
-
-
-	
-	
+		}
 
 	private void applyDesiredDaemonStatus() {
 		new Thread(new Runnable() {
@@ -202,9 +99,6 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 		return model.get(ENABLED_KEY, true); //This daemon is enabled by default
 	}
 
-	private void setDaemonEnabled(Boolean enable) {
-		model.set(ENABLED_KEY, enable);
-	}
 
 	public String getXMLRPCVariable(){
 		return XMLRPC_VARIABLE;

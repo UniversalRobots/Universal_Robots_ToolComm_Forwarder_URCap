@@ -47,7 +47,7 @@ public class RS485InstallationNodeService implements InstallationNodeService {
 
 	@Override
 	public String getTitle() {
-		return "My Daemon";
+		return "RS485";
 	}
 
 	@Override

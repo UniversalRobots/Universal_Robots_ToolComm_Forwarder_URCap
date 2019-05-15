@@ -77,14 +77,6 @@ public class XmlRpcRS485Interface {
 		return processString(result);
 	}
 
-	private boolean processBoolean(Object response) throws UnknownResponseException {
-		if (response instanceof Boolean) {
-			Boolean val = (Boolean) response;
-			return val.booleanValue();
-		} else {
-			throw new UnknownResponseException();
-		}
-	}
 
 	private String processString(Object response) throws UnknownResponseException {
 		if (response instanceof String) {

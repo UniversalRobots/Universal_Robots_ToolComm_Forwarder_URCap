@@ -31,6 +31,6 @@ def start_server():
 	cmd = 'echo "after" >> log.txt' 
 	os.system(cmd)
 	print "end server"
-create_file()
-#start_server()
+#create_file()
+start_server()
 
