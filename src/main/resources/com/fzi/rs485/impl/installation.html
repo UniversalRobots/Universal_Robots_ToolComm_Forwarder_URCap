@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My Daemon</title>
+		<style>
+			label {
+				display: inline-block;
+				width: 100px;
+				height: 28px;
+			}
+
+			input {
+				display: inline-block;
+				width: 200px;
+				height: 28px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>My Daemon</h1>
+		<form>
+			<p>The popup title below is shared between all MyDaemon program nodes through the driver.<br />Cannot be empty.</p>
+			<br />
+			<label>Popup title:</label><input id="popuptitle" type="text"/>
+			<div class="spacer">&nbsp;</div>		
+			<input id="btnEnableDaemon" type="button" style="font-size: 18px;" />
+			<input id="btnDisableDaemon" type="button" style="font-size: 18px;" />
+			<div>&nbsp;</div>
+			<label id="lblDaemonStatus" style="width: 200px;">Status of daemon</label>
+		</form>
+	</body>
+</html>

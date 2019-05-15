@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MyDaemon</title>
+		<style>
+			input {
+				display: inline-block;
+				width: 200px;
+				height: 28px;
+			}
+
+			label {
+				display: inline-block;
+				width: 150px;
+				height: 28px;
+			}
+
+			#preview {
+				display: block;
+				padding: 35px 20px 20px 0px;
+			}
+
+			#header {
+				padding: 0px 0px 20px 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<form>
+			<p>This program node will open a popup on execution.</p><br \>
+			<label>Enter your name:</label> <input id="yourname" type="text"/>
+			<br/>
+			<div id="preview">
+				<h3 id="header">Preview</h3><br \>
+				Title: <label id="titlePreviewLabel" style="width: 400px;"/> <br \>
+				Message: <label id="messagePreviewLabel" style="width: 400px;"/>
+			</div>
+		</form>
+	</body>
+</html>
