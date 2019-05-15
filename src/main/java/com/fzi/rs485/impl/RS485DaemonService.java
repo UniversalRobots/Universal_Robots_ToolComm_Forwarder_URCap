@@ -48,7 +48,8 @@ public class RS485DaemonService implements DaemonService {
 	@Override
 	public URL getExecutable() {
 		try {
-			return new URL("file:com/fzi/rs485/impl/daemon/hello-world.py"); // Python executable
+			return new URL("file:com/fzi/rs485/impl/daemon/daemon-rs485.py"); // Python executable
+			//return new URL("file:com/fzi/rs485/impl/daemon/rs.py"); // Python executable
 		} catch (MalformedURLException e) {
 			return null;
 		}
