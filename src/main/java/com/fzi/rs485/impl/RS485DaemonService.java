@@ -29,34 +29,31 @@ import com.ur.urcap.api.contribution.DaemonService;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 public class RS485DaemonService implements DaemonService {
+  private DaemonContribution daemonContribution;
 
-	private DaemonContribution daemonContribution;
+  public RS485DaemonService() {}
 
-	public RS485DaemonService() {
-	}
+  @Override
+  public void init(DaemonContribution daemonContribution) {
+    this.daemonContribution = daemonContribution;
+    try {
+      daemonContribution.installResource(new URL("file:com/fzi/rs485/impl/daemon/"));
+    } catch (MalformedURLException e) {
+    }
+  }
 
-	@Override
-	public void init(DaemonContribution daemonContribution) {
-		this.daemonContribution = daemonContribution;
-		try {
-			daemonContribution.installResource(new URL("file:com/fzi/rs485/impl/daemon/"));
-		} catch (MalformedURLException e) {	}
-	}
+  @Override
+  public URL getExecutable() {
+    try {
+      return new URL("file:com/fzi/rs485/impl/daemon/daemon-rs485.py"); // Python executable
+      // return new URL("file:com/fzi/rs485/impl/daemon/rs.py"); // Python executable
+    } catch (MalformedURLException e) {
+      return null;
+    }
+  }
 
-	@Override
-	public URL getExecutable() {
-		try {
-			return new URL("file:com/fzi/rs485/impl/daemon/daemon-rs485.py"); // Python executable
-			//return new URL("file:com/fzi/rs485/impl/daemon/rs.py"); // Python executable
-		} catch (MalformedURLException e) {
-			return null;
-		}
-	}
-
-	public DaemonContribution getDaemon() {
-		return daemonContribution;
-	}
-
+  public DaemonContribution getDaemon() {
+    return daemonContribution;
+  }
 }

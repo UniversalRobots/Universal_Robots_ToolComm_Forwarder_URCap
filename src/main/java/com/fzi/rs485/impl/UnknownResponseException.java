@@ -24,5 +24,4 @@
 //----------------------------------------------------------------------
 package com.fzi.rs485.impl;
 
-public class UnknownResponseException extends Exception {
-}
+public class UnknownResponseException extends Exception {}

@@ -33,26 +33,25 @@ import java.io.InputStream;
 import com.ur.urcap.api.domain.data.DataModel;
 
 public class RS485InstallationNodeService implements InstallationNodeService {
+  private final RS485DaemonService daemonService;
 
-	private final RS485DaemonService daemonService;
+  public RS485InstallationNodeService(RS485DaemonService daemonService) {
+    this.daemonService = daemonService;
+  }
 
-	public RS485InstallationNodeService(RS485DaemonService daemonService) {
-		this.daemonService = daemonService;
-	}
+  @Override
+  public InstallationNodeContribution createInstallationNode(URCapAPI api, DataModel model) {
+    return new RS485InstallationNodeContribution(daemonService, model);
+  }
 
-	@Override
-	public InstallationNodeContribution createInstallationNode(URCapAPI api, DataModel model) {
-		return new RS485InstallationNodeContribution(daemonService, model);
-	}
+  @Override
+  public String getTitle() {
+    return "RS485";
+  }
 
-	@Override
-	public String getTitle() {
-		return "RS485";
-	}
-
-	@Override
-	public InputStream getHTML() {
-		InputStream is = this.getClass().getResourceAsStream("/com/fzi/rs485/impl/installation.html");
-		return is;
-	}
+  @Override
+  public InputStream getHTML() {
+    InputStream is = this.getClass().getResourceAsStream("/com/fzi/rs485/impl/installation.html");
+    return is;
+  }
 }
