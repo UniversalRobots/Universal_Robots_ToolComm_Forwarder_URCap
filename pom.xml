@@ -42,7 +42,7 @@
 
 		<!--Current year for the copyright-->
 		<copyright.year>${maven.build.timestamp}</copyright.year>
-		<maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+		<maven.build.timestamp.format>2019</maven.build.timestamp.format>
 	</properties>
 
 	<build>
