@@ -24,10 +24,16 @@
 //----------------------------------------------------------------------
 package com.fzi.rs485.impl;
 
+import java.awt.EventQueue;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
+import com.ur.urcap.api.ui.annotation.Label;
+import com.ur.urcap.api.ui.component.LabelComponent;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
   private static final String XMLRPC_VARIABLE = "rs485";
@@ -36,6 +42,8 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   private DataModel model;
   private final RS485DaemonService daemonService;
   private XmlRpcRS485Interface xmlRpcDaemonInterface;
+	private Timer uiTimer;
+
 
   public RS485InstallationNodeContribution(RS485DaemonService daemonService, DataModel model) {
     this.daemonService = daemonService;
@@ -44,22 +52,63 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
     applyDesiredDaemonStatus();
   }
 
+  @Label(id = "lblDaemonStatus")
+	private LabelComponent daemonStatusLabel;
+  
+  
   @Override
   public void openView() {
-  }
+	//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
+			uiTimer = new Timer(true);
+			uiTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							updateUI();
+						}
+					});
+				}
+			}, 0, 1000);
+		}
+  
+  private void updateUI() {
+		DaemonContribution.State state = getDaemonState();
+
+		String text = "";
+		switch (state) {
+		case RUNNING:
+			text = "My Daemon runs";
+			break;
+		case STOPPED:
+			text = "My Daemon stopped";
+			break;
+		case ERROR:
+			text = "My Daemon failed";
+			break;
+		}
+		daemonStatusLabel.setText(text);
+	}
 
   @Override
-  public void closeView() {
-  }
+	public void closeView() {
+		if (uiTimer != null) {
+			uiTimer.cancel();
+		}
+	}
 
   public boolean isDefined() {
     return getDaemonState() == DaemonContribution.State.RUNNING;
   }
-
+ 
+  
   @Override
   public void generateScript(ScriptWriter writer) {
     writer.globalVariable(
         XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40404/RPC2\")");
+    	setDaemonEnabled(true);
+    	applyDesiredDaemonStatus();
     
   }
 
@@ -91,6 +140,9 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
       Thread.sleep(100);
     }
   }
+  
+
+  
 
   private DaemonContribution.State getDaemonState() {
     return daemonService.getDaemon().getState();
@@ -99,6 +151,13 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   private Boolean isDaemonEnabled() {
     return model.get(ENABLED_KEY, true); // This daemon is enabled by default
   }
+  
+
+
+	private void setDaemonEnabled(Boolean enable) {
+		model.set(ENABLED_KEY, enable);
+	}
+
 
   public String getXMLRPCVariable() {
     return XMLRPC_VARIABLE;
