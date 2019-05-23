@@ -30,7 +30,7 @@ import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
-  private static final String XMLRPC_VARIABLE = "my_daemon";
+  private static final String XMLRPC_VARIABLE = "rs485";
   private static final String ENABLED_KEY = "enabled";
 
   private DataModel model;
@@ -46,12 +46,10 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 
   @Override
   public void openView() {
-    System.out.println("View opened");
   }
 
   @Override
   public void closeView() {
-    System.out.println("View opened");
   }
 
   public boolean isDefined() {
@@ -62,6 +60,7 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   public void generateScript(ScriptWriter writer) {
     writer.globalVariable(
         XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40404/RPC2\")");
+    
   }
 
   private void applyDesiredDaemonStatus() {
