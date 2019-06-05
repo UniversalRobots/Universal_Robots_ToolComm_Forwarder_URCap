@@ -129,7 +129,7 @@
 							<workingDirectory>./daemon</workingDirectory>
 						</configuration>
 					</execution>
-
+<!-- 
 					<execution>
 						<id>compile-daemon</id>
 						<phase>compile</phase>
@@ -156,7 +156,7 @@
 							<commandlineArgs>daemon/HelloWorld src/main/resources/com/fzi/rs485/impl/daemon/</commandlineArgs>
 							<workingDirectory>.</workingDirectory>
 						</configuration>
-					</execution>
+					</execution>-->
 
 					<!-- generate URCap package after compiling -->
 					<execution>
