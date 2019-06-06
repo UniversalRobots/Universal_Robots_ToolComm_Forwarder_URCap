@@ -129,35 +129,6 @@
 							<workingDirectory>./daemon</workingDirectory>
 						</configuration>
 					</execution>
-
-					<execution>
-						<id>compile-daemon</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>scons</executable>
-							<arguments>
-								<argument>release=1</argument>
-							</arguments>
-							<workingDirectory>./daemon</workingDirectory>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>copy-daemon</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>cp</executable>
-							<commandlineArgs>daemon/HelloWorld src/main/resources/com/fzi/rs485/impl/daemon/</commandlineArgs>
-							<workingDirectory>.</workingDirectory>
-						</configuration>
-					</execution>
-
 					<!-- generate URCap package after compiling -->
 					<execution>
 						<id>package-urcap</id>

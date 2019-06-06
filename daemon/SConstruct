@@ -1,0 +1,95 @@
+import os
+import os.path
+import socket
+
+# debug environment
+CPPDEFINES_debug = ['DEBUG']
+CCFLAGS_debug =  ['-g', '-O2']
+CXXFLAGS_debug = ['-Wno-deprecated']
+LINKFLAGS_debug = []
+
+# release environment
+CPPDEFINES_release = ['NDEBUG']
+CCFLAGS_release = ['-Wall', '-O2']
+CXXFLAGS_release = ['-Wno-deprecated']
+LINKFLAGS_release = ['-s'] # Strip symbols
+
+# Build directories
+HW_dirs = Split('''.
+                   service
+                   ''')
+
+# Exports to SConscript-files in build directories
+HW_exports = ['env']
+
+# Construction environment
+env = Environment(ENV = os.environ)
+
+release_env = Environment(CPPDEFINES = CPPDEFINES_release,
+                          CCFLAGS = CCFLAGS_release,
+                          CXXFLAGS = CXXFLAGS_release,
+                          LINKFLAGS = LINKFLAGS_release)
+
+debug_env = Environment(CPPDEFINES = CPPDEFINES_debug,
+                        CCFLAGS = CCFLAGS_debug,
+                        CXXFLAGS = CXXFLAGS_debug,
+                        LINKFLAGS = LINKFLAGS_debug)
+
+release = ARGUMENTS.get('release', 0)    
+
+if int(release):
+    print "Release build..."
+    env = release_env
+else:
+    print "Debug build..."
+    env = debug_env
+
+# Find out where our toolchain lives
+try:
+    urtools = os.environ['URTOOL_ROOT']
+except KeyError:
+    urtools = '/usr'
+    print "Warning: urtool3 cross-compiler is missing. This build will most likely fail or the daemon will not run properly on the robot."
+
+conf = Configure(env)
+env['ENV']['PATH'] = os.environ['PATH']
+env['ENV']['HOME'] = os.environ['HOME']
+
+# Toolchain prefix?
+try:
+    devkit_prefix = os.environ['URTOOL_TARGET']
+except KeyError:
+    devkit_prefix = ''
+
+if devkit_prefix != '': 
+    env.Replace(ADDR2LINE = devkit_prefix + 'addr2line') 
+    env.Replace(CPP = devkit_prefix + 'cpp')
+    env.Replace(GCCBUG = devkit_prefix + 'gccbug')
+    env.Replace(GCOV = devkit_prefix + 'gcov')
+    env.Replace(GDB = devkit_prefix + 'gdb')
+    env.Replace(GDBTUI = devkit_prefix + 'gdbtui')
+    env.Replace(NM = devkit_prefix + 'nm')
+    env.Replace(OBJDUMP = devkit_prefix + 'objdump')
+    env.Replace(RANLIB = devkit_prefix + 'ranlib')
+    env.Replace(READELF = devkit_prefix + 'readelf')
+    env.Replace(SIZE = devkit_prefix + 'size')
+    env.Replace(STRINGS = devkit_prefix + 'strings')
+    env.Replace(STRIP = devkit_prefix + 'strip')
+    env.Replace(CC = devkit_prefix + 'gcc')
+    env.Replace(CXX = devkit_prefix + 'g++') 
+    env.Replace(AS = devkit_prefix + 'as') 
+    env.Replace(AR = devkit_prefix + 'ar')
+    env.Replace(LD = devkit_prefix + 'ld')  
+    env.Replace(OBJCOPY = devkit_prefix + 'objcopy') 
+
+include_path = [ urtools + '/include']
+lib_path = [ urtools + '/lib']
+xmlrpc_LIBS = ['xmlrpc_server_abyss++', 'xmlrpc_server_abyss', 'xmlrpc_server_pstream++', 'xmlrpc_server', 'xmlrpc_abyss', 'xmlrpc_server++', 'xmlrpc++', 'xmlrpc', 'xmlrpc_packetsocket', 'xmlrpc_xmlparse', 'xmlrpc_xmltok', 'xmlrpc_util', 'curl']
+libs = [xmlrpc_LIBS]
+env.Append(CPPPATH = include_path)
+env.Append(LIBPATH = lib_path)
+env.Append(LIBS = libs) 
+env = conf.Finish()
+
+print "Building URCap daemon"
+env.SConscript(dirs = HW_dirs, exports = HW_exports)
