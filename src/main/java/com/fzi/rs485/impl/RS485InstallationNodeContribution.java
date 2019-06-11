@@ -24,10 +24,16 @@
 //----------------------------------------------------------------------
 package com.fzi.rs485.impl;
 
+import java.awt.EventQueue;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
+import com.ur.urcap.api.ui.annotation.Label;
+import com.ur.urcap.api.ui.component.LabelComponent;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
   private static final String XMLRPC_VARIABLE = "rs485";
@@ -36,6 +42,8 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   private DataModel model;
   private final RS485DaemonService daemonService;
   private XmlRpcRS485Interface xmlRpcDaemonInterface;
+  private Timer uiTimer;
+  
 
   public RS485InstallationNodeContribution(RS485DaemonService daemonService, DataModel model) {
     this.daemonService = daemonService;
@@ -43,14 +51,48 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
     xmlRpcDaemonInterface = new XmlRpcRS485Interface("127.0.0.1", 40404);
     applyDesiredDaemonStatus();
   }
+  
+  @Label(id = "lblDaemonStatus")
+	private LabelComponent daemonStatusLabel;
 
   @Override
   public void openView() {
-  }
+	//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
+			uiTimer = new Timer(true);
+			uiTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							updateUI();
+						}
+					});
+				}
+			}, 0, 1000);
+		}
+  
+  private void updateUI() {
+		//DaemonContribution.State state = getDaemonState();
+		int state = 1;
+		String text = "";
+		switch (state) {
+		case 1:
+			text = "The RS-485 daemon runs";
+			break;
+		case 2:
+			text = "The RS-485 daemon is not running";
+			break;
+		}
+		daemonStatusLabel.setText(text);
+	}
 
   @Override
-  public void closeView() {
-  }
+	public void closeView() {
+		if (uiTimer != null) {
+			uiTimer.cancel();
+		}
+	}
 
   public boolean isDefined() {
     return getDaemonState() == DaemonContribution.State.RUNNING;
