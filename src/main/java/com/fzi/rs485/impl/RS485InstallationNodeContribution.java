@@ -74,15 +74,12 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   
   private void updateUI() {
 		//DaemonContribution.State state = getDaemonState();
-		int state = 1;
+		boolean state = true;
 		String text = "";
-		switch (state) {
-		case 1:
+		if(state) {
 			text = "The RS-485 daemon runs";
-			break;
-		case 2:
+		}else {
 			text = "The RS-485 daemon is not running";
-			break;
 		}
 		daemonStatusLabel.setText(text);
 	}
