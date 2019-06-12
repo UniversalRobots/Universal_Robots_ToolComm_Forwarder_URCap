@@ -42,20 +42,19 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   private DataModel model;
   private final RS485DaemonService daemonService;
   private XmlRpcRS485Interface xmlRpcDaemonInterface;
-	private Timer uiTimer;
-
-
+  private Timer uiTimer;
+  
   public RS485InstallationNodeContribution(RS485DaemonService daemonService, DataModel model) {
     this.daemonService = daemonService;
     this.model = model;
     xmlRpcDaemonInterface = new XmlRpcRS485Interface("127.0.0.1", 40404);
     applyDesiredDaemonStatus();
   }
-
+  
   @Label(id = "lblDaemonStatus")
 	private LabelComponent daemonStatusLabel;
-  
-  
+
+
   @Override
   public void openView() {
 	//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
@@ -74,19 +73,14 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 		}
   
   private void updateUI() {
-		DaemonContribution.State state = getDaemonState();
 
+		//DaemonContribution.State state = getDaemonState();
+		boolean state = true;
 		String text = "";
-		switch (state) {
-		case RUNNING:
-			text = "My Daemon runs";
-			break;
-		case STOPPED:
-			text = "My Daemon stopped";
-			break;
-		case ERROR:
-			text = "My Daemon failed";
-			break;
+		if(state) {
+			text = "The RS-485 daemon runs";
+		}else {
+			text = "The RS-485 daemon is not running";
 		}
 		daemonStatusLabel.setText(text);
 	}

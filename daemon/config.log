@@ -1,0 +1,3 @@
+file /home/ur/workspace/com.fzi.rs485/daemon/SConstruct,line 54:
+	Configure(confdir = .sconf_temp)
+
