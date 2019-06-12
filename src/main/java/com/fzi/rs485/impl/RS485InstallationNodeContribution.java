@@ -43,67 +43,63 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   private final RS485DaemonService daemonService;
   private XmlRpcRS485Interface xmlRpcDaemonInterface;
   private Timer uiTimer;
-  
+
   public RS485InstallationNodeContribution(RS485DaemonService daemonService, DataModel model) {
     this.daemonService = daemonService;
     this.model = model;
     xmlRpcDaemonInterface = new XmlRpcRS485Interface("127.0.0.1", 40404);
     applyDesiredDaemonStatus();
   }
-  
-  @Label(id = "lblDaemonStatus")
-	private LabelComponent daemonStatusLabel;
 
+  @Label(id = "lblDaemonStatus") private LabelComponent daemonStatusLabel;
 
   @Override
   public void openView() {
-	//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
-			uiTimer = new Timer(true);
-			uiTimer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					EventQueue.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							updateUI();
-						}
-					});
-				}
-			}, 0, 1000);
-		}
-  
-  private void updateUI() {
+    // UI updates from non-GUI threads must use EventQueue.invokeLater (or
+    // SwingUtilities.invokeLater)
+    uiTimer = new Timer(true);
+    uiTimer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        EventQueue.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            updateUI();
+          }
+        });
+      }
+    }, 0, 1000);
+  }
 
-		//DaemonContribution.State state = getDaemonState();
-		boolean state = true;
-		String text = "";
-		if(state) {
-			text = "The RS-485 daemon runs";
-		}else {
-			text = "The RS-485 daemon is not running";
-		}
-		daemonStatusLabel.setText(text);
-	}
+  private void updateUI() {
+    // DaemonContribution.State state = getDaemonState();
+    boolean state = true;
+    String text = "";
+    if (state) {
+      text = "The RS-485 daemon runs";
+    } else {
+      text = "The RS-485 daemon is not running";
+    }
+    daemonStatusLabel.setText(text);
+  }
 
   @Override
-	public void closeView() {
-		if (uiTimer != null) {
-			uiTimer.cancel();
-		}
-	}
+  public void closeView() {
+    if (uiTimer != null) {
+      uiTimer.cancel();
+    }
+  }
 
   public boolean isDefined() {
     return getDaemonState() == DaemonContribution.State.RUNNING;
   }
- 
-  
+
   @Override
   public void generateScript(ScriptWriter writer) {
     writer.globalVariable(
         XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40404/RPC2\")");
-    	setDaemonEnabled(true);
-    	applyDesiredDaemonStatus();
-    
+    setDaemonEnabled(true);
+    applyDesiredDaemonStatus();
   }
 
   private void applyDesiredDaemonStatus() {
@@ -134,9 +130,6 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
       Thread.sleep(100);
     }
   }
-  
-
-  
 
   private DaemonContribution.State getDaemonState() {
     return daemonService.getDaemon().getState();
@@ -145,13 +138,10 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   private Boolean isDaemonEnabled() {
     return model.get(ENABLED_KEY, true); // This daemon is enabled by default
   }
-  
 
-
-	private void setDaemonEnabled(Boolean enable) {
-		model.set(ENABLED_KEY, enable);
-	}
-
+  private void setDaemonEnabled(Boolean enable) {
+    model.set(ENABLED_KEY, enable);
+  }
 
   public String getXMLRPCVariable() {
     return XMLRPC_VARIABLE;
