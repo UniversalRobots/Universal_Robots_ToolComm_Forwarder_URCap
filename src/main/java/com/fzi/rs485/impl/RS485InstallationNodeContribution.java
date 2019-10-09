@@ -28,6 +28,8 @@ import java.awt.EventQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.xmlrpc.XmlRpcException;
+
 import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;
@@ -36,11 +38,14 @@ import com.ur.urcap.api.ui.annotation.Input;
 import com.ur.urcap.api.ui.annotation.Label;
 import com.ur.urcap.api.ui.component.InputButton;
 import com.ur.urcap.api.ui.component.InputEvent;
+import com.ur.urcap.api.ui.component.InputTextField;
 import com.ur.urcap.api.ui.component.LabelComponent;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
   private static final String XMLRPC_VARIABLE = "rs485";
   private static final String ENABLED_KEY = "enabled";
+  private static final String TCP_PORT_KEY = "rs485_tcp_port";
+  private static final int DEFAULT_TCP_PORT = 54321;
 
   private DataModel model;
   private final RS485DaemonService daemonService;
@@ -56,10 +61,20 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 
   @Label(id = "lblDaemonStatus")
     private LabelComponent daemonStatusLabel;
+  @Input (id = "inputTcpPort")
+    private InputTextField tcpPortInput;
   @Input(id = "btnEnableDaemon")
 	private InputButton enableDaemonButton;
   @Input(id = "btnDisableDaemon")
 	private InputButton disableDaemonButton;
+  
+  @Input (id = "inputTcpPort")
+  public void onTcpPortInput(InputEvent event) {
+	if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+      setTcpPort(Integer.parseInt(tcpPortInput.getText()));
+      changeTcpPort();
+    }
+  }
   
   @Input(id = "btnEnableDaemon")
   public void onStartClick(InputEvent event) {
@@ -82,6 +97,7 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   public void openView() {
     // UI updates from non-GUI threads must use EventQueue.invokeLater (or
     // SwingUtilities.invokeLater)
+	tcpPortInput.setText(Integer.toString(getTcpPort()));
     enableDaemonButton.setText("Start Daemon");
     disableDaemonButton.setText("Stop daemon");
     uiTimer = new Timer(true);
@@ -112,14 +128,17 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
     String text = "";
     switch (state) {
     case RUNNING:
-      text = "The RS-485 daemon runs.";
+      text = "The RS-485 daemon is running.";
       break;
     case STOPPED:
-        text = "The RS-485 daemon is not running.";
-        break;
-    case ERROR:
-        text = "The RS-485 stopped due to an error.";
-        break;
+      text = "The RS-485 daemon is not running.";
+      break;
+    //case ERROR:
+    //    text = "The RS-485 stopped due to an error.";
+    //    break;
+    default:
+      text = "The RS-485 daemon is ...";
+      break;
     }
     daemonStatusLabel.setText(text);
   }
@@ -167,12 +186,22 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
                || !xmlRpcDaemonInterface.isReachable())) {
       Thread.sleep(100);
     }
+    changeTcpPort();
   }
 
   private DaemonContribution.State getDaemonState() {
     return daemonService.getDaemon().getState();
   }
 
+  
+  private int getTcpPort() {
+	return model.get(TCP_PORT_KEY, DEFAULT_TCP_PORT);
+  }
+  
+  private void setTcpPort(int port) {
+    model.set(TCP_PORT_KEY, port);
+  }
+  
   private Boolean isDaemonEnabled() {
     return model.get(ENABLED_KEY, true); //This daemon is enabled by default
   }
@@ -187,5 +216,18 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 
   public XmlRpcRS485Interface getXmlRpcDaemonInterface() {
     return xmlRpcDaemonInterface;
+  }
+  
+  private void changeTcpPort() {
+	String port = Integer.toString(getTcpPort()); 
+	try {
+	   xmlRpcDaemonInterface.setTcpPort(port);
+	} catch (XmlRpcException e) {
+	  // TODO Auto-generated catch block
+	  e.printStackTrace();
+    } catch (UnknownResponseException e) {
+	  // TODO Auto-generated catch block
+	  e.printStackTrace();
+	}
   }
 }
