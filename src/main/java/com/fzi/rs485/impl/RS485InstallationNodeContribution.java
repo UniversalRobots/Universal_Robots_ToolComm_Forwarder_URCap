@@ -32,7 +32,10 @@ import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
+import com.ur.urcap.api.ui.annotation.Input;
 import com.ur.urcap.api.ui.annotation.Label;
+import com.ur.urcap.api.ui.component.InputButton;
+import com.ur.urcap.api.ui.component.InputEvent;
 import com.ur.urcap.api.ui.component.LabelComponent;
 
 public class RS485InstallationNodeContribution implements InstallationNodeContribution {
@@ -51,12 +54,36 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
     applyDesiredDaemonStatus();
   }
 
-  @Label(id = "lblDaemonStatus") private LabelComponent daemonStatusLabel;
+  @Label(id = "lblDaemonStatus")
+    private LabelComponent daemonStatusLabel;
+  @Input(id = "btnEnableDaemon")
+	private InputButton enableDaemonButton;
+  @Input(id = "btnDisableDaemon")
+	private InputButton disableDaemonButton;
+  
+  @Input(id = "btnEnableDaemon")
+  public void onStartClick(InputEvent event) {
+	if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+	  setDaemonEnabled(true);
+		applyDesiredDaemonStatus();
+	}
+  }
+
+  @Input(id = "btnDisableDaemon")
+  public void onStopClick(InputEvent event) {
+    if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+      setDaemonEnabled(false);
+      applyDesiredDaemonStatus();
+      System.err.println("Disabled daemon.");
+    }
+  }
 
   @Override
   public void openView() {
     // UI updates from non-GUI threads must use EventQueue.invokeLater (or
     // SwingUtilities.invokeLater)
+    enableDaemonButton.setText("Start Daemon");
+    disableDaemonButton.setText("Stop daemon");
     uiTimer = new Timer(true);
     uiTimer.schedule(new TimerTask() {
       @Override
@@ -73,12 +100,26 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 
   private void updateUI() {
     // DaemonContribution.State state = getDaemonState();
-    boolean state = true;
-    String text = "";
-    if (state) {
-      text = "The RS-485 daemon runs";
+    DaemonContribution.State state = getDaemonState();
+    if (state == DaemonContribution.State.RUNNING) {
+      enableDaemonButton.setEnabled(false);
+	  disableDaemonButton.setEnabled(true);
+      
     } else {
-      text = "The RS-485 daemon is not running";
+      enableDaemonButton.setEnabled(true);
+  	  disableDaemonButton.setEnabled(false);
+    }
+    String text = "";
+    switch (state) {
+    case RUNNING:
+      text = "The RS-485 daemon runs.";
+      break;
+    case STOPPED:
+        text = "The RS-485 daemon is not running.";
+        break;
+    case ERROR:
+        text = "The RS-485 stopped due to an error.";
+        break;
     }
     daemonStatusLabel.setText(text);
   }
@@ -96,10 +137,6 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
 
   @Override
   public void generateScript(ScriptWriter writer) {
-    writer.globalVariable(
-        XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40404/RPC2\")");
-    setDaemonEnabled(true);
-    applyDesiredDaemonStatus();
   }
 
   private void applyDesiredDaemonStatus() {
@@ -122,6 +159,7 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   }
 
   private void awaitDaemonRunning(long timeOutMilliSeconds) throws InterruptedException {
+	  System.err.println("Firing up daemon.");
     daemonService.getDaemon().start();
     long endTime = System.nanoTime() + timeOutMilliSeconds * 1000L * 1000L;
     while (System.nanoTime() < endTime
@@ -136,7 +174,7 @@ public class RS485InstallationNodeContribution implements InstallationNodeContri
   }
 
   private Boolean isDaemonEnabled() {
-    return model.get(ENABLED_KEY, true); // This daemon is enabled by default
+    return model.get(ENABLED_KEY, true); //This daemon is enabled by default
   }
 
   private void setDaemonEnabled(Boolean enable) {
