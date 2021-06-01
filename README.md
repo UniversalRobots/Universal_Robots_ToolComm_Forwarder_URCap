@@ -20,6 +20,7 @@ The [`ur_robot_driver`](http://wiki.ros.org/ur_robot_driver) has a [convenience 
 
 ## Acknowledgment
 Developed in collaboration between:
+
 [<img height="60" alt="Universal Robots A/S" src="doc/resources/ur_logo.jpg">](https://www.universal-robots.com/) &nbsp; and &nbsp;
 [<img height="60" alt="FZI Research Center for Information Technology" src="doc/resources/fzi-logo_transparenz.png">](https://www.fzi.de).
 
