@@ -9,7 +9,7 @@ the screen and select `Settings`.
 
 ![here](./resources/install_1.png)
 
-In the menue on the left, go down to `System` -> `URCaps` and click the `+` button to add a URCap to the system.
+In the menu on the left, go down to `System` -> `URCaps` and click the `+` button to add a URCap to the system.
 Choose the RS485 URCap file you previously copied to the robot's `programs` folder and open it.
 
 ![here](./resources/install_2.png)
