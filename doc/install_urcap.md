@@ -4,7 +4,7 @@ This is a short step-by-step guide how to install the RS485 URCap in Polyscope.
 We assume that you copied the latest *RS485 URCap* from [here](https://github.com/UniversalRobots/Universal_Robots_ToolComm_Forwarder_URCap/releases) to the `programs` folder of your e-series robot.
 
 ## Add the URCap to the system
-After startup of the robot, click on the `hamburger` menue at the top right of
+After startup of the robot, click on the `hamburger` menu item at the top right of
 the screen and select `Settings`.
 
 ![here](./resources/install_1.png)
