@@ -1,0 +1,21 @@
+name: Build URCap
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        SDK_VERSION: [1.10.0, 1.11.0, 1.12.0]
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./.github/actions/build_urcap
+        env:
+          SDK_VERSION: ${{ matrix.SDK_VERSION }}
+      - name: Upload urcap_artifact
+        uses: actions/upload-artifact@v1
+        with:
+          path: target
+          name: ROS_as_a_Service_sdk-${{ matrix.SDK_VERSION }}.urcap
