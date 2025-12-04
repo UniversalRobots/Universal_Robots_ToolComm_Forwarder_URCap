@@ -1,4 +1,10 @@
 # URcaps RS-485 daemon
+
+> [!NOTE]
+> This is the PolyScope 5 version of the Tool Communication forwarding URCap. For the PolyScope X
+> version, please see [Universal_Robots_ToolComm_Forwarder_URCapX](https://github.com/UniversalRobots/Universal_Robots_ToolComm_Forwarder_URCapX).
+
+
 Package to support relaying the RS-485 communication device in a UR robot to a remote PC. This feature is only supported on the e-series.
 
 Basically, this starts [`socat`](https://linux.die.net/man/1/socat) to relay the tool communication device to the network socket on port 54321.
