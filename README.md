@@ -29,7 +29,13 @@ socat pty,link=${LOCAL_DEVICE_NAME},raw,ignoreeof,waitslave tcp:${ROBOT_IP}:5432
 After that you should be able to use the device under `${LOCAL_DEVICE_NAME}` (in our case `/tmp/ttyUR`) just like any local RS-485 tty device.
 
 ## Use inside a ROS application
-The [`ur_robot_driver`](http://wiki.ros.org/ur_robot_driver) has a [convenience script](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/scripts/tool_communication) wrapping the above `socat` call. When running the driver, the e-Series and UR series launchfiles provide a [flag](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/launch/ur10e_bringup.launch#L14) for automatically activating the tool communication. The launchfiles also allow setting up communication parameters on the robot directly.
+The [`ur_robot_driver`](https://index.ros.org/p/ur_robot_driver/) has a [convenience
+script](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/scripts/tool_communication.py)
+wrapping the above `socat` call. When running the driver, the e-Series and UR series launchfiles
+provide a
+[flag](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/launch/ur_rsp.launch.py#L339-L344)
+for automatically activating the tool communication. The launchfiles also allow setting up
+communication parameters on the robot directly.
 
 ## Acknowledgment
 Developed in collaboration between:
