@@ -1,10 +1,16 @@
 # URcaps RS-485 daemon
-Package to support relaying the RS-485 communication device in a UR robot to a remote PC. This feature is only supported on the e-series.
+
+> [!NOTE]
+> This is the PolyScope 5 version of the Tool Communication forwarding URCap. For the PolyScope X
+> version, please see [Universal_Robots_ToolComm_Forwarder_URCapX](https://github.com/UniversalRobots/Universal_Robots_ToolComm_Forwarder_URCapX).
+
+
+Package to support relaying the RS-485 communication device in a UR robot to a remote PC. This feature is supported on the e-Series and UR Series.
 
 Basically, this starts [`socat`](https://linux.die.net/man/1/socat) to relay the tool communication device to the network socket on port 54321.
 
 ## Installation
-First, you need to put an `RS485 URCap` into the `programs` folder of your e-series robot.
+First, you need to put an `RS485 URCap` into the `programs` folder of your robot.
 You'll find the latest version [here](https://github.com/UniversalRobots/Universal_Robots_ToolComm_Forwarder_URCap/releases) in the *Releases* section.
 Copying can be done either via `scp` or via using a USB stick.
 Next, go through [these steps](doc/install_urcap.md) to install the URCap in Polyscope.
@@ -23,7 +29,13 @@ socat pty,link=${LOCAL_DEVICE_NAME},raw,ignoreeof,waitslave tcp:${ROBOT_IP}:5432
 After that you should be able to use the device under `${LOCAL_DEVICE_NAME}` (in our case `/tmp/ttyUR`) just like any local RS-485 tty device.
 
 ## Use inside a ROS application
-The [`ur_robot_driver`](http://wiki.ros.org/ur_robot_driver) has a [convenience script](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/scripts/tool_communication) wrapping the above `socat` call. When running the driver, the e-Series launchfiles provide a [flag](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/launch/ur10e_bringup.launch#L14) for automatically activating the tool communication. The launchfiles also allow setting up communication parameters on the robot directly.
+The [`ur_robot_driver`](https://index.ros.org/p/ur_robot_driver/) has a [convenience
+script](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/scripts/tool_communication.py)
+wrapping the above `socat` call. When running the driver, the e-Series and UR series launchfiles
+provide a
+[flag](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/launch/ur_rsp.launch.py#L339-L344)
+for automatically activating the tool communication. The launchfiles also allow setting up
+communication parameters on the robot directly.
 
 ## Acknowledgment
 Developed in collaboration between:
