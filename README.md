@@ -33,7 +33,7 @@ The [`ur_robot_driver`](https://index.ros.org/p/ur_robot_driver/) has a [conveni
 script](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/scripts/tool_communication.py)
 wrapping the above `socat` call. When running the driver, the e-Series and UR series launchfiles
 provide a
-[flag](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/launch/ur_rsp.launch.py#L339-L344)
+[flag](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/637422151a12e14bef9b1c68a6da3b424180ec35/ur_robot_driver/launch/ur_rsp.launch.py#L339-L344)
 for automatically activating the tool communication. The launchfiles also allow setting up
 communication parameters on the robot directly.
 
