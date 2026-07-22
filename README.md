@@ -28,6 +28,10 @@ socat pty,link=${LOCAL_DEVICE_NAME},raw,ignoreeof,waitslave tcp:${ROBOT_IP}:5432
 
 After that you should be able to use the device under `${LOCAL_DEVICE_NAME}` (in our case `/tmp/ttyUR`) just like any local RS-485 tty device.
 
+> [!NOTE]
+> If port 54321 is inaccessible, go to the `Hamburger Menu` -> `Settings` -> `Security` -> `General`, and clear both fields under `Inbound Connections`. 
+> ![here](./doc/resources/inbound.png)
+
 ## Use inside a ROS application
 The [`ur_robot_driver`](https://index.ros.org/p/ur_robot_driver/) has a [convenience
 script](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/scripts/tool_communication.py)
