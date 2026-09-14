@@ -28,6 +28,11 @@ socat pty,link=${LOCAL_DEVICE_NAME},raw,ignoreeof,waitslave tcp:${ROBOT_IP}:5432
 
 After that you should be able to use the device under `${LOCAL_DEVICE_NAME}` (in our case `/tmp/ttyUR`) just like any local RS-485 tty device.
 
+> [!NOTE]
+> On some versions of PolyScope 5, the tool communication port (54321) is disabled by default. To check if this is the case, go to the `Hamburger Menu` -> `Settings` -> `Security` -> `General`, and ensure port 54321 is not disabled in the fields under `Inbound Connections`.
+> Both fields can be cleared to remove all restrictions and enable all ports.
+> ![here](./doc/resources/inbound.png)
+
 ## Use inside a ROS application
 The [`ur_robot_driver`](https://index.ros.org/p/ur_robot_driver/) has a [convenience
 script](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/blob/main/ur_robot_driver/scripts/tool_communication.py)
